@@ -1,0 +1,34 @@
+#docker-compose up
+version: "3.9"
+services:
+  deploy:
+    container_name: javaRestApp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localPostgresSQLDBJava16:5432/local_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+    networks:
+      java16-network:
+        aliases:
+          - java16app
+  postgres:
+    container_name: localPostgresSQLDBJava16
+    image: postgres
+    environment:
+      POSTGRES_DB: "local_db"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "12345"
+    ports:
+      - "5432:5432"
+    networks:
+      java16-network:
+        aliases:
+          - java16db
+networks:
+  java16-network:
+    name: 'java16_network'
